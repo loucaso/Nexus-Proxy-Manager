@@ -1,0 +1,25 @@
+REQUISITOS DO SISTEMA
+=====================
+
+1. SOFTWARE
+   - Node.js (Versão 14.0.0 ou superior recomendada)
+   - NPM (Gerenciador de pacotes, instalado junto com o Node)
+   - Sistema Operacional: Windows, Linux ou macOS
+
+2. REDE E CONECTIVIDADE
+   - IP Externo Público (pode ser Dinâmico ou Estático)
+   - Portas 80 e 443 DISPONÍVEIS (Não podem estar em uso por outros serviços como IIS, Apache, Skype, etc.)
+   - Acesso ao Roteador para configurar Port Forwarding (NAT)
+
+3. DOMÍNIO
+   - Um domínio registrado válido (ex: seudominio.com)
+   - Acesso ao painel DNS do domínio para criar registros "A"
+
+4. DEPENDÊNCIAS DO PROJETO (Instaladas via 'npm install')
+   - express: Servidor web para o painel
+   - http-proxy: Núcleo do proxy reverso
+   - greenlock-express: Gerenciamento automático de SSL (Let's Encrypt)
+   - lowdb: Banco de dados local leve (JSON)
+   - cors / body-parser: Utilitários para a API
+   - helmet: Segurança e proteção de cabeçalhos HTTP
+   - express-rate-limit: Proteção contra ataques de força bruta e sobrecarga

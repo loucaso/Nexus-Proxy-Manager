@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Proxy Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f3ff;
+            --secondary: #bc13fe;
+            --bg: #0a0b1e;
+            --card-bg: rgba(20, 22, 45, 0.8);
+            --text: #e0e6ed;
+            --danger: #ff2a6d;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 40%);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px var(--primary), 0 0 20px var(--secondary);
+            margin-bottom: 50px;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 5px;
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: #fff;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px var(--secondary);
+        }
+
+        .btn-danger {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 5px 10px;
+            font-size: 0.8em;
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .domain-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .domain-input-group input {
+            flex: 1;
+        }
+
+        .domain-input-group span {
+            color: var(--text);
+            font-size: 1.2em;
+        }
+
+        .domain-input-group select {
+            flex: 1;
+        }
+
+        .host-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .host-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .host-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .host-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .host-link:hover .host-domain {
+            text-decoration: underline;
+        }
+
+        .host-domain {
+            color: var(--primary);
+            font-size: 1.1em;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .open-icon {
+            font-size: 0.8em;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .host-link:hover .open-icon {
+            opacity: 1;
+            color: var(--primary);
+        }
+
+        .host-info strong {
+            display: block;
+            color: var(--primary);
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .host-info small {
+            color: #aaa;
+        }
+
+        .ssl-badge {
+            display: inline-block;
+            background: rgba(0, 255, 100, 0.2);
+            color: #00ff64;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            margin-left: 10px;
+            border: 1px solid rgba(0, 255, 100, 0.4);
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: #888;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        #notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--card-bg);
+            border-left: 4px solid var(--primary);
+            border-radius: 5px;
+            backdrop-filter: blur(10px);
+            display: none;
+            animation: slideIn 0.5s ease;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div id="notification"></div>
+
+    <div class="container">
+        <h1>Nexus Proxy Manager</h1>
+
+        <!-- Settings / Domains Section -->
+        <div class="glass-card">
+            <div class="section-header">
+                <h2>Meus Domínios</h2>
+            </div>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="newBaseDomain" placeholder="ex: meusite.com" style="flex: 1;">
+                <button class="btn btn-primary" onclick="addBaseDomain()" style="width: auto;">Registrar Domínio</button>
+            </div>
+            <div id="baseDomainList" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <!-- Chips will go here -->
+            </div>
+        </div>
+
+        <!-- Add Host Section -->
+        <div class="glass-card">
+            <div class="section-header">
+                <h2>Novo Redirecionamento</h2>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('subdomain')">Subdomínio</div>
+                <div class="tab" onclick="switchTab('custom')">Domínio Personalizado</div>
+            </div>
+
+            <div id="subdomainForm">
+                <div class="form-group">
+                    <label>Endereço</label>
+                    <div class="domain-input-group">
+                        <input type="text" id="subInput" placeholder="ex: app, game, painel">
+                        <span>.</span>
+                        <select id="domainSelect">
+                            <option value="" disabled selected>Selecione um domínio...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="customForm" style="display: none;">
+                <div class="form-group">
+                    <label>Domínio Completo</label>
+                    <input type="text" id="fullDomainInput" placeholder="ex: sistema.outrodominio.com.br">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Destino Local (IP:Porta)</label>
+                <input type="text" id="targetInput" placeholder="ex: 192.168.1.50:3000">
+            </div>
+
+            <button class="btn btn-primary" onclick="addHost()">Criar Link Seguro</button>
+        </div>
+
+        <!-- Active Hosts List -->
+        <div class="glass-card">
+            <div class="section-header">
+                <h2>Conexões Ativas</h2>
+                <small style="color: var(--primary);">SSL Auto-Renew Ativo</small>
+            </div>
+            <ul class="host-list" id="hostList">
+                <!-- Hosts will be populated here -->
+            </ul>
+        </div>
+
+        <div style="text-align: center; color: #666; font-size: 0.8em; margin-top: 50px; opacity: 0.7;">
+            <p>Criado por Loucaso + AI</p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+
+        // Load data on start
+        window.onload = () => {
+            loadHosts();
+            loadDomains();
+        };
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'subdomain') {
+                document.getElementById('subdomainForm').style.display = 'block';
+                document.getElementById('customForm').style.display = 'none';
+            } else {
+                document.getElementById('subdomainForm').style.display = 'none';
+                document.getElementById('customForm').style.display = 'block';
+            }
+        }
+
+        async function loadHosts() {
+            const res = await fetch(`${API_URL}/hosts`);
+            const hosts = await res.json();
+            const list = document.getElementById('hostList');
+            list.innerHTML = '';
+            
+            hosts.forEach(host => {
+                const li = document.createElement('li');
+                li.className = 'host-item';
+                li.innerHTML = `
+                    <a href="https://${host.domain}" target="_blank" class="host-link" title="Abrir link seguro">
+                        <div class="host-info">
+                            <strong class="host-domain">${host.domain} <span class="ssl-badge">SECURE</span> <span class="open-icon">↗</span></strong>
+                            <small>➔ ${host.target}</small>
+                        </div>
+                    </a>
+                    <button class="btn btn-danger" onclick="deleteHost('${host.domain}')">REMOVER</button>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        async function loadDomains() {
+            const res = await fetch(`${API_URL}/domains`);
+            const domains = await res.json();
+            const select = document.getElementById('domainSelect');
+            const list = document.getElementById('baseDomainList');
+            
+            // Populate Select
+            select.innerHTML = '<option value="" disabled selected>Selecione um domínio...</option>';
+            domains.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.name;
+                opt.textContent = d.name;
+                select.appendChild(opt);
+            });
+
+            // Populate Chips List
+            list.innerHTML = '';
+            domains.forEach(d => {
+                const chip = document.createElement('div');
+                chip.style.cssText = 'background: rgba(0,243,255,0.1); border: 1px solid var(--primary); padding: 5px 15px; border-radius: 20px; display: flex; align-items: center; gap: 10px;';
+                chip.innerHTML = `
+                    ${d.name}
+                    <span onclick="deleteDomain('${d.name}')" style="cursor: pointer; color: var(--danger); font-weight: bold;">×</span>
+                `;
+                list.appendChild(chip);
+            });
+        }
+
+        async function addBaseDomain() {
+            const domain = document.getElementById('newBaseDomain').value;
+            if (!domain) return showNotify('Digite um domínio!', 'error');
+
+            const res = await fetch(`${API_URL}/domains`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ domain })
+            });
+
+            if (res.ok) {
+                document.getElementById('newBaseDomain').value = '';
+                loadDomains();
+                showNotify('Domínio registrado com sucesso!');
+            } else {
+                showNotify('Erro ao registrar domínio', 'error');
+            }
+        }
+
+        async function deleteDomain(domain) {
+            if(!confirm(`Remover o domínio base ${domain}?`)) return;
+            await fetch(`${API_URL}/domains/${domain}`, { method: 'DELETE' });
+            loadDomains();
+            showNotify('Domínio removido');
+        }
+
+        async function addHost() {
+            let domain;
+            const target = document.getElementById('targetInput').value;
+
+            if (document.getElementById('subdomainForm').style.display !== 'none') {
+                const sub = document.getElementById('subInput').value;
+                const base = document.getElementById('domainSelect').value;
+                if (!sub || !base) return showNotify('Preencha subdomínio e selecione o domínio', 'error');
+                domain = `${sub}.${base}`;
+            } else {
+                domain = document.getElementById('fullDomainInput').value;
+            }
+
+            if (!domain || !target) return showNotify('Preencha todos os campos', 'error');
+
+            const btn = document.querySelector('button[onclick="addHost()"]');
+            btn.textContent = 'Configurando SSL...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_URL}/hosts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ domain, target })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    showNotify('Host adicionado e SSL configurado!');
+                    document.getElementById('subInput').value = '';
+                    document.getElementById('fullDomainInput').value = '';
+                    document.getElementById('targetInput').value = '';
+                    loadHosts();
+                } else {
+                    showNotify(data.error || 'Erro ao adicionar', 'error');
+                }
+            } catch (e) {
+                showNotify('Erro de conexão', 'error');
+            } finally {
+                btn.textContent = 'Criar Link Seguro';
+                btn.disabled = false;
+            }
+        }
+
+        async function deleteHost(domain) {
+            if (!confirm(`Tem certeza que deseja remover ${domain}?`)) return;
+            
+            await fetch(`${API_URL}/hosts/${domain}`, { method: 'DELETE' });
+            loadHosts();
+            showNotify('Host removido');
+        }
+
+        function showNotify(msg, type = 'success') {
+            const el = document.getElementById('notification');
+            el.textContent = msg;
+            el.style.borderLeftColor = type === 'error' ? 'var(--danger)' : 'var(--primary)';
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 3000);
+        }
+    </script>
+</body>
+</html>

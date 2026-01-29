@@ -1,0 +1,18 @@
+# Node modules
+node_modules/
+npm-debug.log
+
+# Database
+db.json
+db.json.bak
+
+# SSL / Greenlock (Contains Private Keys!)
+greenlock.d/
+!greenlock.d/config.json.example
+
+# Environment variables
+.env
+
+# System files
+.DS_Store
+Thumbs.db
